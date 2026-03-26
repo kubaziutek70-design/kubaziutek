@@ -1,0 +1,81 @@
+rules_version = '2';
+service cloud.firestore {
+
+  // --- Funkcje pomocnicze ---
+  // Prosty filtr wulgaryzmów. W prawdziwej aplikacji warto użyć bardziej zaawansowanego rozwiązania.
+  function isProfane(text) {
+    let lowerCaseText = text.toLowerCase();
+    // Dodaj więcej słów do zablokowania
+    return lowerCaseText.contains('kurwa')
+      || lowerCaseText.contains('chuj')
+      || lowerCaseText.contains('jebać')
+      || lowerCaseText.contains('pierdol');
+  }
+
+  match /databases/{database}/documents {
+    
+    // Kolekcja zbanowanych użytkowników (Task 2)
+    match /banned_users/{userId} {
+       allow read: if true;
+       allow write: if request.auth.uid == 'TUTAJ_WKLEJ_SWOJE_UID'; // Tylko Admin może banować
+    }
+    
+    // Kolekcja klientów (VIP) (Task 3)
+    match /customers/{userId} {
+       allow read: if true;
+       // Pozwalamy użytkownikowi zapisać info o sobie (w prawdziwym sklepie robiłby to serwer płatności)
+       allow write: if request.auth.uid == userId;
+    }
+
+    // Kolekcja Tajne Akta VIP (Task 7)
+    match /vip_secret/{docId} {
+       // Czytanie tylko jeśli user jest w kolekcji customers i ma vip: true
+       allow read: if request.auth != null && 
+                   exists(/databases/$(database)/documents/customers/$(request.auth.uid)) &&
+                   get(/databases/$(database)/documents/customers/$(request.auth.uid)).data.vip == true;
+       allow write: if request.auth.uid == 'TUTAJ_WKLEJ_SWOJE_UID'; // Tylko admin dodaje akta
+    }
+    
+    // Główna ścieżka aplikacji (zmienna appId z kodu JS)
+    match /artifacts/{appId}/public/data {
+
+      // 1. STATYSTYKI (Liczniki Kuby i Ksawiego)
+      match /stats/global {
+        // Każdy może odczytać statystyki
+        allow read: if true;
+        
+        // ZABEZPIECZENIE ADMINA (Task 1)
+        // Tylko konkretny UID może zmieniać liczniki.
+        // Znajdź swoje UID w konsoli (F12) i wklej poniżej zamiast 'TUTAJ_WKLEJ_SWOJE_UID'
+        allow update: if request.auth.uid == 'TUTAJ_WKLEJ_SWOJE_UID'
+                      && (request.resource.data.kuba is number || !("kuba" in request.resource.data))
+                      && (request.resource.data.ksawi is number || !("ksawi" in request.resource.data));
+      }
+
+      // 2. CZAT (Wiadomości)
+      match /messages/{messageId} {
+        // Każdy widzi wiadomości
+        allow read: if true;
+
+        // Dodawanie wiadomości:
+        // - Wymaga autoryzacji
+        // - Treść musi być tekstem i nie może być pusta
+        // - Nick musi być tekstem
+        // - Użytkownik NIE może być zbanowany (Task 2)
+        allow create: if request.auth != null
+                      && !exists(/databases/$(database)/documents/banned_users/$(request.auth.uid))
+                      && request.resource.data.text is string
+                      && request.resource.data.text.size() > 0
+                      && request.resource.data.text.size() < 1000
+                      && request.resource.data.nick is string
+                      // ZABEZPIECZENIE RANGI (Task 5)
+                      // Jeśli ranga to 'admin', UID musi się zgadzać z UID admina.
+                      && (request.resource.data.rank != 'admin' || request.auth.uid == 'TUTAJ_WKLEJ_SWOJE_UID')
+                      && !isProfane(request.resource.data.text); // Blokada wulgaryzmów
+                      
+        // Blokada edycji i usuwania wiadomości przez użytkowników
+        allow update, delete: if false;
+      }
+    }
+  }
+}

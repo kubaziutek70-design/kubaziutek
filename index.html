@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZESPÓŁ KUBAZIUTEK | OFFICIAL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <div class="inline-flex items-center gap-2 bg-slate-800 px-4 py-1 rounded-full mb-6 border border-slate-700">
+                <div id="status-dot" class="live-dot" style="background: #94a3b8; animation: none;"></div>
+                <span id="status-text" class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Łączenie...</span>
+            </div>
+            <!-- Task 4: Google Login -->
+            <div id="auth-container" class="mb-4">
+                <button id="google-login-btn" class="hidden bg-white text-black text-xs font-bold py-1 px-3 rounded shadow hover:bg-gray-200">G Zaloguj się z Google</button>
+                <button id="logout-btn" class="hidden bg-slate-700 text-white text-xs font-bold py-1 px-3 rounded shadow hover:bg-slate-600">Wyloguj</button>
+                <!-- Task 11: Dark/Light Mode Toggle -->
+                <button id="theme-toggle" class="ml-2 bg-slate-700 text-white text-xs font-bold py-1 px-3 rounded shadow hover:bg-slate-600">🌙 / ☀️</button>
+            </div>
+            <h1 class="text-6xl md:text-8xl brawl-font text-yellow-400 italic mb-2 drop-shadow-lg">
+                ZESPÓŁ KUBAZIUTEK
+            </h1>
+            <p class="text-slate-400 font-bold tracking-widest uppercase text-sm">Oficjalne Centrum Projektów</p>
+        </header>
+
+        <!-- Stats Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            <div class="glass-card p-6 border-b-4 border-yellow-500">
+                <h3 class="brawl-font text-2xl text-yellow-400 mb-4 uppercase text-center">Cel Kuby</h3>
+                <div class="progress-bar mb-2">
+                    <div id="kuba-bar" class="progress-fill"></div>
+                </div>
+                <div class="flex justify-between font-black text-xl text-white">
+                    <span id="kuba-count">---</span>
+                    <span class="text-slate-500">/ 1000</span>
+                </div>
+                <p class="text-[10px] text-yellow-500 font-bold mt-2 uppercase animate-pulse text-center italic">Nagroda: FACE REVEAL!</p>
+            </div>
+
+            <div class="glass-card p-6 border-b-4 border-purple-500">
+                <h3 class="brawl-font text-2xl text-purple-400 mb-4 uppercase text-center">Cel Ksawiego</h3>
+                <div class="progress-bar mb-2">
+                    <div id="ksawi-bar" class="progress-fill" style="background: linear-gradient(90deg, #8b5cf6, #a78bfa);"></div>
+                </div>
+                <div class="flex justify-between font-black text-xl text-white">
+                    <span id="ksawi-count">---</span>
+                    <span class="text-slate-500">/ 50</span>
+                </div>
+                <p class="text-[10px] text-purple-400 font-bold mt-2 uppercase text-center italic">Wspierajcie Ksawiego!</p>
+            </div>
+        </div>
+
+        <!-- Admin Panel -->
+        <section class="glass-card p-4 mb-12 border-2 border-dashed border-slate-700">
+            <details id="admin-panel">
+                <summary class="text-slate-500 text-xs font-bold uppercase cursor-pointer text-center outline-none">Panel Sterowania Subami (Admin)</summary>
+                <div class="grid grid-cols-2 gap-4 mt-4 text-white">
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-yellow-500 mb-1">Nowe Suby Kuby:</label>
+                        <input type="number" id="admin-kuba" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm outline-none focus:border-yellow-500">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-purple-500 mb-1">Nowe Suby Ksawiego:</label>
+                        <input type="number" id="admin-ksawi" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm outline-none focus:border-purple-500">
+                    </div>
+                </div>
+                <button id="update-stats-btn" class="w-full mt-4 bg-slate-700 hover:bg-slate-600 text-white font-bold py-2 rounded text-xs uppercase transition-all">Aktualizuj Liczniki</button>
+            </details>
+        </section>
+
+        <!-- Shop Section -->
+        <section class="glass-card p-6 mb-12 border-b-4 border-green-500 relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-4 opacity-10 pointer-events-none text-9xl">💎</div>
+            <h3 class="brawl-font text-2xl text-green-400 mb-4 uppercase text-center italic">Sklepik Widza</h3>
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4 bg-slate-800/50 p-4 rounded-xl border border-slate-600">
+                <div>
+                    <h4 class="font-bold text-xl text-yellow-400 uppercase drop-shadow-md">Ranga VIP na czacie</h4>
+                    <p class="text-xs text-slate-300">Wyróżnij się złotym kolorem nicku i ramki!</p>
+                    <p id="shop-status" class="text-[10px] text-slate-500 font-bold uppercase mt-1">Status: Podstawowy</p>
+                </div>
+                <button id="buy-vip-btn" class="btn-action bg-green-500 hover:bg-green-400 shadow-[0_4px_0_#15803d] active:shadow-[0_2px_0_#15803d] active:translate-y-[2px] text-white text-sm">KUP VIP (19.99 PLN)</button>
+            </div>
+        </section>
+
+        <!-- Zones Section -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
+            <!-- Zone: Player -->
+            <div class="glass-card p-4 border-t-4 border-blue-400 flex flex-col items-center text-center">
+                <div class="text-3xl mb-2">👤</div>
+                <h3 class="brawl-font text-xl text-blue-400 uppercase">Strefa Widza</h3>
+                <p class="text-xs text-slate-400 mb-4">Dostęp podstawowy</p>
+                <div class="bg-slate-800/50 p-2 rounded w-full text-xs text-left space-y-1">
+                    <p>✅ Pisanie na czacie</p>
+                    <p>✅ Podgląd liczników</p>
+                    <p>❌ Brak wyróżnienia</p>
+                </div>
+            </div>
+
+            <!-- Zone: VIP -->
+            <div class="glass-card p-4 border-t-4 border-yellow-400 flex flex-col items-center text-center relative overflow-hidden">
+                <div class="absolute inset-0 bg-yellow-500/5 pointer-events-none"></div>
+                <div class="text-3xl mb-2">👑</div>
+                <h3 class="brawl-font text-xl text-yellow-400 uppercase">Strefa VIP</h3>
+                <p class="text-xs text-slate-400 mb-4">Dla wspierających</p>
+                <div class="bg-slate-800/50 p-2 rounded w-full text-xs text-left space-y-1">
+                    <p>✅ <span class="text-yellow-400">Złoty Nick</span></p>
+                    <p>✅ <span class="text-yellow-400">Priorytet wiadomości</span></p>
+                    <p>✅ Dostęp do tajnych ankiet</p>
+                </div>
+                <button id="vip-secret-btn" class="mt-3 w-full py-1 bg-yellow-600 hover:bg-yellow-500 text-black font-bold text-xs rounded uppercase transition shadow-lg shadow-yellow-900/50">Otwórz Tajne Akta</button>
+                <!-- Task 7: Container for VIP content -->
+                <div id="vip-content-area" class="mt-2 w-full text-xs text-yellow-200 hidden border border-yellow-500/30 p-2 rounded bg-black/20"></div>
+            </div>
+
+            <!-- Zone: Admin -->
+            <div class="glass-card p-4 border-t-4 border-red-500 flex flex-col items-center text-center">
+                <div class="text-3xl mb-2">🛡️</div>
+                <h3 class="brawl-font text-xl text-red-500 uppercase">Strefa Admina</h3>
+                <p class="text-xs text-slate-400 mb-4">Zarządzanie</p>
+                <div class="bg-slate-800/50 p-2 rounded w-full text-xs text-left space-y-1">
+                    <p>⚡ Reset liczników</p>
+                    <p>⚡ System Banów</p>
+                    <p>⚡ Zarządzanie czatem</p>
+                </div>
+                <button onclick="const p=document.getElementById('admin-panel'); p.open=true; p.scrollIntoView({behavior:'smooth'});" class="mt-3 w-full py-1 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded uppercase transition shadow-lg shadow-red-900/50">Panel Statystyk</button>
+                <button id="ban-btn" class="mt-2 w-full py-1 bg-slate-700 hover:bg-slate-600 text-white font-bold text-xs rounded uppercase transition border border-slate-500">Banuj Gracza</button>
+            </div>
+        </section>
+
+        <!-- Chat -->
+        <section class="glass-card p-8">
+            <h3 class="text-2xl brawl-font mb-6 text-center uppercase text-white tracking-widest italic">Czat Ekipy</h3>
+            
+            <!-- Task 6: Load History Button -->
+            <button id="load-more-chat" class="w-full mb-2 text-xs text-slate-500 hover:text-white uppercase font-bold py-2 border-b border-slate-700">Załaduj starsze wiadomości</button>
+            
+            <div id="chat-box" class="space-y-4 mb-8 max-h-60 overflow-y-auto pr-2 custom-scrollbar flex flex-col text-white">
+                <p class="text-center text-slate-500 text-sm italic">Oczekiwanie na autoryzację...</p>
+            </div>
+            <form id="msg-form" class="flex flex-col gap-4">
+                <!-- Task 12: Avatar Selection -->
+                <div class="flex gap-2 items-center bg-slate-800/50 p-2 rounded-xl border border-slate-700">
+                    <span class="text-xs uppercase font-bold text-slate-400">Awatar:</span>
+                    <select id="user-avatar" class="bg-transparent text-2xl outline-none cursor-pointer">
+                        <option value="😎">😎</option>
+                        <option value="🐱">🐱</option>
+                        <option value="👽">👽</option>
+                        <option value="🤖">🤖</option>
+                        <option value="💩">💩</option>
+                        <option value="👻">👻</option>
+                        <option value="🤡">🤡</option>
+                        <option value="👹">👹</option>
+                    </select>
+                    <input type="text" id="user-nick" placeholder="Twój Nick" required 
+                        class="flex-1 bg-slate-800 border border-slate-700 rounded-xl p-3 outline-none focus:border-yellow-500 transition-colors text-white">
+                    <select id="user-rank" class="bg-slate-800 border border-slate-700 rounded-xl p-3 outline-none focus:border-yellow-500 transition-colors text-white text-xs uppercase font-bold cursor-pointer">
+                        <option value="widz">Widz</option>
+                        <option value="vip">VIP</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <textarea id="user-msg" placeholder="Napisz coś..." required 
+                    class="bg-slate-800 border border-slate-700 rounded-xl p-3 outline-none focus:border-yellow-500 transition-colors h-24 text-white"></textarea>
+                <button type="submit" id="send-btn" class="btn-action brawl-font text-xl uppercase italic">Wyślij!</button>
+            </form>
+        </section>
+
+        <footer class="mt-12 text-center text-slate-500 text-xs font-bold uppercase tracking-widest pb-8">
+            Created by Zespół Kubaziutek &copy; 2026
+        </footer>
+    </div>
+
+    <!-- Task 8: Notification Sound (Simple Beep Data URI) -->
+    <audio id="notif-sound" src="data:audio/wav;base64,UklGRl9vT1BXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU"></audio>
+
+    <script type="module" src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+:root {
+    --primary: #fbbf24;
+    --secondary: #8b5cf6;
+    --bg: #0f172a;
+}
+
+body {
+    background-color: var(--bg);
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    background-image: radial-gradient(circle at 50% -20%, #1e293b, #0f172a);
+    min-height: 100vh;
+    margin: 0;
+    transition: background 0.3s, color 0.3s;
+}
+
+/* Tryb Jasny */
+body.light-mode {
+    --bg: #f8fafc;
+    background-color: var(--bg);
+    background-image: radial-gradient(circle at 50% -20%, #e2e8f0, #f8fafc);
+    color: #1e293b;
+}
+
+.brawl-font {
+    font-family: 'Bangers', cursive;
+    letter-spacing: 1px;
+}
+
+.glass-card {
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1.5rem;
+    transition: background 0.3s, border 0.3s;
+}
+
+body.light-mode .glass-card {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.progress-bar {
+    height: 24px;
+    background: #334155;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 3px solid #1e293b;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #f59e0b, #fbbf24);
+    width: 0%;
+    transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.btn-action {
+    background: var(--primary);
+    color: black;
+    font-weight: 900;
+    padding: 12px 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 0 #b45309;
+    transition: all 0.1s;
+    cursor: pointer;
+}
+
+.btn-action:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #b45309;
+}
+
+@keyframes pulse-red {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+.live-dot {
+    height: 8px; width: 8px; background: #ef4444; border-radius: 50%;
+    animation: pulse-red 1s infinite;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 10px;
+}
